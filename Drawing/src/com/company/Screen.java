@@ -15,7 +15,9 @@ import javax.swing.*;
  * Created by kevin on 1/21/2017.
  */
 
-//This is where we DRAW//
+/**
+ * Screen is
+ */
 public class Screen extends JPanel implements ActionListener {
     private boolean gameover;
     private Random rand = new Random();
@@ -40,22 +42,34 @@ public class Screen extends JPanel implements ActionListener {
     private Timer timer;
     private final int delay = 100;
     //dimensions of the game.
-    private int width = 44;
+    private int width;
     //height
-    private int length = 22;
-    private int square_size = 25;
+    private int length;
+    private int square_size;
     //gap size is the gap between squares. So we'll see
     //gaps of size gap_size*2 because space between two squares
-    private int gap_size = square_size/20;
-
+    private int gap_size;
     //boolean to check if snake is eating itself
     private boolean self_cannibalize = false;
 
+    public Screen(int x, int y, int squareSize) {
+        width = x;
+        length = y;
+        square_size = squareSize;
+        gap_size = square_size/20;
+        setPreferredSize(new Dimension((width+2) * squareSize, (length+2) * squareSize));
+        initScreen();
+
+    }
     public Screen() {
+
         initScreen();
     }
     //initialize
     public void initScreen() {
+        JLabel words = new JLabel("WHAT");
+        add(words);
+
         addKeyListener(new Adapter());
         setFocusable(true);
         gameover = false;
@@ -117,8 +131,11 @@ public class Screen extends JPanel implements ActionListener {
         if (gameover == true) {
             Font newFont = new Font("Times new Roman", Font.PLAIN, square_size * 2);
             g.setFont(newFont);
-            g.drawString("Gameover", (width/3) * square_size,
-                    (length/3) * square_size);
+            FontMetrics metrics = g.getFontMetrics(newFont);
+            String message = "GAMEOVER DUDE";
+
+            g.drawString(message, ((width+2) * square_size-metrics.stringWidth(message))/2,
+                    ((length+2) * square_size-metrics.getHeight())/2);
         }
         //paint the snake... with gaps.
         ListIterator<Point> body = snake.listIterator();

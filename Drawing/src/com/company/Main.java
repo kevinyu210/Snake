@@ -15,6 +15,5 @@ public class Main {
     public static void main(String[] ignored) {
         Frame f = new Frame();
         }
-//        System.out.println(input.next());
     }
 
