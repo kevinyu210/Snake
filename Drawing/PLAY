@@ -1,4 +1,3 @@
 #!/bin/bash
-echo "Kevin is awesome"
-javac -d out/production/Drawing -sourcepath src src/com/company/Main.java
-java -classpath out/production/Drawing com.company.Main
+javac -d out/production/snake -sourcepath src src/com/company/Main.java
+java -classpath out/production/snake com.company.Main

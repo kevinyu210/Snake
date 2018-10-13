@@ -26,10 +26,9 @@ public class Screen extends JPanel implements ActionListener {
     private Point head;
     //snake food
     private Point food;
-
     //current direction of snake
     private int currentDir;
-    //direction that input will manipulate
+    //direction that input will manipulate. Represented by a point
     private Point dir;
     //directional code.
     private int dirCode;
@@ -56,34 +55,33 @@ public class Screen extends JPanel implements ActionListener {
         width = x;
         length = y;
         square_size = squareSize;
-        gap_size = square_size/20;
-        setPreferredSize(new Dimension((width+2) * squareSize, (length+2) * squareSize));
+        gap_size = square_size / 20;
+        setPreferredSize(new Dimension((width + 2) * squareSize, (length + 2) * squareSize));
         initScreen();
-
     }
+
     public Screen() {
-
         initScreen();
     }
-    //initialize
+
+    //initialize screen.
     public void initScreen() {
         JLabel words = new JLabel("WHAT");
         add(words);
-
         addKeyListener(new Adapter());
         setFocusable(true);
         gameover = false;
         timer = new Timer(delay, this);
         snake = new LinkedList();
-        //the center.
-        head = new Point(width/2,length/2);
+        //starts at the center.
+        head = new Point(width / 2, length / 2);
         snake.add(head);
         //start direction as up
         dirCode = up;
         currentDir = up;
-        dir = new Point(0,0);
+        dir = new Point(0, 0);
         //nextint Range of values for any point is...(1:width)
-        food = new Point((rand.nextInt(width)+1), (rand.nextInt(length)+1));
+        food = new Point((rand.nextInt(width) + 1), (rand.nextInt(length) + 1));
         //timer is like refresh rate. Snake moves according to timer
         //if timer doesnt stop on each game, snake moves faster.
         timer.start();
@@ -99,62 +97,73 @@ public class Screen extends JPanel implements ActionListener {
                 initScreen();
             }
             //positive number == positive directions
-                //right if not currently going left
-            else if (dirCode==right && (currentDir !=left || snake.size() ==1)) {
+            //right if not currently going left
+            else if (dirCode == right && (currentDir != left || snake.size() == 1)) {
                 dir.setLocation(1, 0);
                 //left if not currently going right
-            } else if (dirCode == left && (currentDir !=right || snake.size() ==1)) {
+            } else if (dirCode == left && (currentDir != right || snake.size() == 1)) {
                 dir.setLocation(-1, 0);
                 //up if not currently going down
-            } else if (dirCode == up && (currentDir !=down || snake.size() ==1)) {
+            } else if (dirCode == up && (currentDir != down || snake.size() == 1)) {
                 dir.setLocation(0, -1);
                 //down if not currently going up
-            } else if (dirCode == down && (currentDir !=up || snake.size() ==1)) {
+            } else if (dirCode == down && (currentDir != up || snake.size() == 1)) {
                 dir.setLocation(0, 1);
             }
-            //if none... then its eating itself.
+            //if none... then its going in the reverse direction. Can't do that.
             else {
                 self_cannibalize = true;
             }
         }
+
         @Override
         public void keyReleased(KeyEvent e) {
-            //do something maybe? doesn't matter
+            //Nothing on key release
         }
     }
+
     public void paint(Graphics g) {
         g.setColor(Color.black);
         g.fillRect(0, 0, (width + 2) * square_size, (length + 2) * square_size);
         g.setColor(Color.white);
-        g.drawRect(square_size,square_size,width*square_size,length*square_size);
+        g.drawRect(square_size, square_size, width * square_size, length * square_size);
         //print gameover
         if (gameover == true) {
             Font newFont = new Font("Times new Roman", Font.PLAIN, square_size * 2);
             g.setFont(newFont);
             FontMetrics metrics = g.getFontMetrics(newFont);
-            String message = "GAMEOVER DUDE";
-
-            g.drawString(message, ((width+2) * square_size-metrics.stringWidth(message))/2,
-                    ((length+2) * square_size-metrics.getHeight())/2);
+            String message = "GAME OVER";
+            g.drawString(message, ((width + 2) * square_size - metrics.stringWidth(message)) / 2,
+                    ((length + 2) * square_size - metrics.getHeight()) / 2);
         }
         //paint the snake... with gaps.
         ListIterator<Point> body = snake.listIterator();
         while (body.hasNext()) {
             Point temp = body.next();
             //(x-coord,y-coord,width,height)
-            g.fillRect((int)temp.getX()*square_size+ gap_size,
-                    (int) temp.getY()*square_size + gap_size,
-                    square_size - 2*gap_size,
-                    square_size - 2*gap_size);
+            g.fillRect((int) temp.getX() * square_size + gap_size,
+                    (int) temp.getY() * square_size + gap_size,
+                    square_size - 2 * gap_size,
+                    square_size - 2 * gap_size);
         }
         //food
-        g.fillRect((int)food.getX()*square_size + gap_size,
-                (int)food.getY()*square_size + gap_size,
-                square_size - 2*gap_size,
-                square_size - 2*gap_size);
+        g.fillRect((int) food.getX() * square_size + gap_size,
+                (int) food.getY() * square_size + gap_size,
+                square_size - 2 * gap_size,
+                square_size - 2 * gap_size);
+
+//        Keeping score:
+//        Font newFont = new Font("Times new Roman", Font.PLAIN, square_size);
+//        g.setFont(newFont);
+//        FontMetrics metrics = g.getFontMetrics(newFont);
+//        String message = "GAME OVER";
+//        String score = Integer.toString(snake.size());
+//        g.drawString(score, metrics.stringWidth(score),
+//                metrics.getHeight());
 
     }
-    //this is called every 10 ms
+
+    //this is called every 10 ms. Shifts the snake at this speed.
     @Override
     public void actionPerformed(ActionEvent e) {
         //can change direction but not eat yourself
@@ -162,13 +171,13 @@ public class Screen extends JPanel implements ActionListener {
             currentDir = dirCode;
         }
         //if dir ==0 then it hasnt started moving yet
-        if (dir.getY() == 0 && dir.getX() ==0) {
+        if (dir.getY() == 0 && dir.getX() == 0) {
             return;
         }
         //get the next point which is the head shifted in dir's direction.
-        Point next = new Point((int)head.getX() + (int)dir.getX(), (int)head.getY()+ (int)dir.getY());
+        Point next = new Point((int) head.getX() + (int) dir.getX(), (int) head.getY() + (int) dir.getY());
         //test death of snake
-        if (next.getX()<1 || next.getX()>width || next.getY()<1 || next.getY()>length || snake.contains(next)) {
+        if (next.getX() < 1 || next.getX() > width || next.getY() < 1 || next.getY() > length || snake.contains(next)) {
             gameover = true;
             repaint();
             timer.stop();
@@ -178,8 +187,9 @@ public class Screen extends JPanel implements ActionListener {
         snake.addFirst(next);
         //it got the food
         if (snake.contains(food)) {
-            food = new Point((rand.nextInt(width)+1), (rand.nextInt(length)+1));
-        } else {
+            food = new Point((rand.nextInt(width) + 1), (rand.nextInt(length) + 1));
+        }
+        else {
             //removes tail of snake as snake moves to simulate movement
             snake.removeLast();
         }

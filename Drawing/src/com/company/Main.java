@@ -13,7 +13,7 @@ import java.awt.event.KeyListener;
  */
 public class Main {
     public static void main(String[] ignored) {
-        Frame f = new Frame();
+        Frame f = new Frame(40, 20,20);
         }
     }
 

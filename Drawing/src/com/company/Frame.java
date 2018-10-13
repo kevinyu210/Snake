@@ -9,21 +9,26 @@ import javax.swing.JFrame;
  */
 public class Frame extends JFrame {
     Screen s;
+    private static int square_size = 25;
+    private static int width = 22;
+    private static int length = 22;
 
-    private int square_size = 25;
-    private int width = 22;
-//    private int length = 1260;
-    private int length = 22;
-
-
-
+//    Default constructor
     public Frame() {
+        this(square_size, width, length);
+    }
+
+//    secondary constructor that takes in square size, and dimensions of screen
+    public Frame(int sq, int w, int l) {
+        square_size = sq;
+        width = w;
+        length = l;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 //        setSize((width+2) * square_size, (length+2) * square_size + 10);
         setResizable(true);
-        setTitle("Graphics");
-
+        setTitle("Snake");
         init();
+
     }
 
     public void init() {
@@ -33,10 +38,7 @@ public class Frame extends JFrame {
 //        getContentPane().add(s);
         add(s);
         pack();
-
-
         setVisible(true);
-
     }
 
     public static void main(String[] args) {
